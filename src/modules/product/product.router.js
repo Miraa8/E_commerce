@@ -5,7 +5,10 @@ import { fileUpload, filterObject } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.middleware.js";
 import * as productSchema from "./product.schema.js";
 import * as productController from "./product.controller.js";
+import reviewRouter from "../review/review.router.js"
 const router = Router();
+
+router.use("/:productId/review",reviewRouter);
 
 //create product
 router.post(

@@ -9,6 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { sendEmail } from "../../utils/sendEmails.js";
 import { clearCart, updateStock } from "./order.service.js";
+import Stripe from "stripe";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -77,7 +78,7 @@ export const placeOrder = asyncHandler(async (req, res, next) => {
     paid: order.finalPrice,
     invoice_nr: order._id,
   };
-  console.log(order.finalPrice);
+
   const pdfPath = path.join(__dirname, `./../../tempInvoices/${order._id}.pdf`);
   createInvoice(invoice, pdfPath);
   //uplaod cloudinary
@@ -101,8 +102,37 @@ export const placeOrder = asyncHandler(async (req, res, next) => {
 
   //clear cart
   clearCart(user._id);
+  // payment with stripe
+  if (payment == "visa") {
+    const stripe = new Stripe(process.env.STRIPE_KEY);
+    let couponExists ;
+    if(order.coupon.name !== undefined){
+      couponExists = await stripe.coupons.create({
+        percent_off:order.coupon.discount,
+        duration:"once"
+      })
+    }
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      success_url: process.env.SUCCESS_URL,
+      cancel_url: process.env.CANCEL_URL,
+      line_items: order.products.map((product) => {
+        return {
+          price_data: {
+            currency: "egp",
+            product_data: { name: product.name },
+            unit_amount: product.itemPrice * 100,
+          },
+          quantity:product.quantity
+        };
+      }),
+      discounts:couponExists ? [{coupon:couponExists.id}]:[]
+    });
+    return res.json({ success: true, resault: { url: session.url } });
+  }
   //responce
-  return res.json({ success: true, resaults: { order } });
+  return res.json({ success: true, resault:{order} });
 });
 
 // cancel order ---------------------------------------------------

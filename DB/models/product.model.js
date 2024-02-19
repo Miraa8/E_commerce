@@ -21,13 +21,15 @@ const productSchema = new Schema({
   category:{type:Types.ObjectId,ref:"Category"},
   subCategory:{type:Types.ObjectId,ref:"Subcategory"},
   brand:{type:Types.ObjectId,ref:"Brand"},
-  cloudFolder:{type:String,unique:true}
+  cloudFolder:{type:String,unique:true},
+  averageRate:{type:Number,min:1,max:5}
 },{timestamps:true,toJSON:{virtuals:true},toObject:{virtuals:true},strictQuery:true});
 productSchema.virtual("finalPrice").get(function(){
 if(this.price){
   return Number.parseFloat(this.price - (this.price * this.discount || 0 )/100).toFixed(2)
 }
 });
+productSchema.virtual("reviews",{ref:"Review",localField:"_id",foreignField:"productId"})
 
 
 productSchema.query.paginate = function(page){
