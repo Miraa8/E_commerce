@@ -17,7 +17,13 @@ const port = 3000;
 //connect db
 await connectDb();
 //cors
-app.use(cors);
+const corsConfig = {
+  origin:"*",
+  credential:true,
+  methods:["POST","PUT","PATCH","GET","DELETE"]
+}
+app.options("",cors(corsConfig));
+app.use(cors(corsConfig));
 // const whiteList = ["http://127.0.0.1:5500"];
 // app.use((req, res, next) => {
 //   if(req.originalUrl.includes("/auth/activate_account")){
