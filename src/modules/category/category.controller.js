@@ -4,6 +4,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import cloudinary from "../../utils/cloud.js";
 import { Subcategory } from "../../../DB/models/subCategory.model.js";
 
+
 //create category
 export const createCategory = asyncHandler(async (req, res, next) => {
   console.log(req.file);

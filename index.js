@@ -13,7 +13,7 @@ import reviewRouter from "./src/modules/review/review.router.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 //connect db
 await connectDb();
 //cors
@@ -45,7 +45,7 @@ app.use("/coupon", couponRouter);
 app.use("/product", productRouter);
 app.use("/cart", cartRouter);
 app.use("/order", orderRouter);
-app.use("/review", orderRouter);
+app.use("/review", reviewRouter);
 //page not found
 app.all("*", (req, res, next) => {
   return next(new Error("page not found", { cause: 404 }));
@@ -60,6 +60,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
-  console.log("app is running at port", port);
+app.listen(process.env.PORT || port, () => {
+  console.log("app is running");
 });
