@@ -1,6 +1,6 @@
 import { Category } from "../../../DB/models/category.model.js";
 import {Product} from "../../../DB/models/product.model.js";
-import { Subcategory } from "../../../DB/models/subCategory.model.js";
+import { Subcategory } from "../../../DB/models/subcategory.model.js";
 import { Brand } from "../../../DB/models/brand.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import cloudinary from "../../utils/cloud.js";
