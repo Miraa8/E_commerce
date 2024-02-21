@@ -2,7 +2,7 @@ import slugify from "slugify";
 import { Category } from "../../../DB/models/category.model.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import cloudinary from "../../utils/cloud.js";
-import { Subcategory } from "../../../DB/models/subCategory.model.js";
+import { Subcategory } from "../../../DB/models/subcategory.model.js";
 
 
 //create category
