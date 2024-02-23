@@ -160,6 +160,7 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
 
 // webhook
 export const orderWebhook = asyncHandler(async(request, response) => {
+  console.log("testo");
   const sig = request.headers["stripe-signature"];
   const stripe = new Stripe(process.env.STRIPE_KEY);
   let event;
@@ -175,6 +176,7 @@ export const orderWebhook = asyncHandler(async(request, response) => {
   const orderId = event.data.object.metadata.order_id;
   if (event.type == checkout.session.completed){
    await Order.findOneAndUpdate({_id:orderId},{status:"visa payed"});
+   console.log(orderId);
    return
   }
      await Order.findOneAndUpdate({ _id: orderId }, { status: "failed to pay" });
