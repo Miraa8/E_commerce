@@ -174,7 +174,7 @@ export const orderWebhook = asyncHandler(async(request, response) => {
 
   // Handle the event
   const orderId = event.data.object.metadata.order_id;
-  if (event.type == checkout.session.completed){
+  if (event.type == "checkout.session.completed"){
    await Order.findOneAndUpdate({_id:orderId},{status:"visa payed"});
    console.log(orderId);
    return
