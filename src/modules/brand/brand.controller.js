@@ -4,7 +4,6 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import cloudinary from "../../utils/cloud.js";
 //create brand
 export const createBrand = asyncHandler(async (req, res, next) => {
-  console.log(req.file);
   if (!req.file) return next(new Error("brand image is required!"));
   const { public_id, secure_url } = await cloudinary.uploader.upload(
     req.file.path,
@@ -32,7 +31,7 @@ export const updateBrand = asyncHandler(async (req, res, next) => {
     brand.image.url = secure_url;
   }
   await brand.save();
-  return res.json({ success: true ,message:"brand updated!"});
+  return res.json({ success: true, message: "brand updated!" });
 });
 //delete brand
 export const deleteBrand = asyncHandler(async (req, res, next) => {

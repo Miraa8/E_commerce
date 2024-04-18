@@ -47,6 +47,7 @@ const userSchema = new Schema(
       },
     },
     coverImages: [{ url: { type: String }, id: { type: String } }],
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

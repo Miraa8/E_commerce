@@ -25,8 +25,12 @@ export const updateCoupon = asyncHandler(async (req, res, next) => {
   coupon.expiredAt = req.body.expiredAt
     ? new Date(req.body.expiredAt).getTime()
     : coupon.expiredAt;
-    await coupon.save();
-    return res.json({success:true,resaults:coupon,message:"coupon update successfully"})
+  await coupon.save();
+  return res.json({
+    success: true,
+    resaults: coupon,
+    message: "coupon update successfully",
+  });
 });
 //delete coupon
 export const deleteCoupon = asyncHandler(async (req, res, next) => {
@@ -35,11 +39,11 @@ export const deleteCoupon = asyncHandler(async (req, res, next) => {
     name: req.params.code,
   });
   if (!coupon) return next(new Error("invalid code!"));
-  await Coupon.findOneAndDelete({name:coupon.name});
-    return res.json({success:true,message:"coupon deleted successfully!"})
+  await Coupon.findOneAndDelete({ name: coupon.name });
+  return res.json({ success: true, message: "coupon deleted successfully!" });
 });
 //get all coupons
 export const allCoupons = asyncHandler(async (req, res, next) => {
   const coupons = await Coupon.find();
-    return res.json({success:true,resaults:{coupons}});
+  return res.json({ success: true, resaults: { coupons } });
 });

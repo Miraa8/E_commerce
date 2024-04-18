@@ -105,15 +105,15 @@ export const placeOrder = asyncHandler(async (req, res, next) => {
   // payment with stripe
   if (payment == "visa") {
     const stripe = new Stripe(process.env.STRIPE_KEY);
-    let couponExists ;
-    if(order.coupon.name !== undefined){
+    let couponExists;
+    if (order.coupon.name !== undefined) {
       couponExists = await stripe.coupons.create({
-        percent_off:order.coupon.discount,
-        duration:"once"
-      })
+        percent_off: order.coupon.discount,
+        duration: "once",
+      });
     }
     const session = await stripe.checkout.sessions.create({
-      metadata:{order_id:order._id.toString()},
+      metadata: { order_id: order._id.toString() },
       payment_method_types: ["card"],
       mode: "payment",
       success_url: process.env.SUCCESS_URL,
@@ -125,15 +125,15 @@ export const placeOrder = asyncHandler(async (req, res, next) => {
             product_data: { name: product.name },
             unit_amount: product.itemPrice * 100,
           },
-          quantity:product.quantity
+          quantity: product.quantity,
         };
       }),
-      discounts:couponExists ? [{coupon:couponExists.id}]:[]
+      discounts: couponExists ? [{ coupon: couponExists.id }] : [],
     });
     return res.json({ success: true, resault: { url: session.url } });
   }
   //responce
-  return res.json({ success: true, resault:{order} });
+  return res.json({ success: true, resault: { order } });
 });
 
 // cancel order ---------------------------------------------------
@@ -159,14 +159,18 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
 });
 
 // webhook
-export const orderWebhook = asyncHandler(async(request, response) => {
+export const orderWebhook = asyncHandler(async (request, response) => {
   console.log("testo");
   const sig = request.headers["stripe-signature"];
   const stripe = new Stripe(process.env.STRIPE_KEY);
   let event;
-  
+
   try {
-    event = stripe.webhooks.constructEvent(request.body, sig, process.env.ENDPOINT_SECRET);
+    event = stripe.webhooks.constructEvent(
+      request.body,
+      sig,
+      process.env.ENDPOINT_SECRET
+    );
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
     return;
@@ -174,11 +178,11 @@ export const orderWebhook = asyncHandler(async(request, response) => {
 
   // Handle the event
   const orderId = event.data.object.metadata.order_id;
-  if (event.type == "checkout.session.completed"){
-   await Order.findOneAndUpdate({_id:orderId},{status:"visa payed"});
-   console.log(orderId);
-   return
+  if (event.type == "checkout.session.completed") {
+    await Order.findOneAndUpdate({ _id: orderId }, { status: "visa payed" });
+    console.log(orderId);
+    return;
   }
-     await Order.findOneAndUpdate({ _id: orderId }, { status: "failed to pay" });
-     return
+  await Order.findOneAndUpdate({ _id: orderId }, { status: "failed to pay" });
+  return;
 });

@@ -11,8 +11,9 @@ export const isAthenticated = asyncHandler(async (req, res, next) => {
   if (!decoded) return next(new Error("invalid token!"));
   const tokenDB = await Token.findOne({ token, isValid: true });
   if (!tokenDB) return next(new Error("token expired!"));
-  const user = await User.findOne({ email: decoded });
+  const user = await User.findOne({ email: decoded.email });
   if (!user) return next(new Error("User not found"));
   req.user = user;
+  req.token = token;
   return next();
 });

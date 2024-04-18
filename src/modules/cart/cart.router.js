@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { isAthenticated } from "../../middleware/authentication.middleware.js";
 import { isAuthorized } from "../../middleware/autherization.middileware.js";
-import * as cartSchema from "./cart.schema.js"
-import * as cartController from "./cart.controller.js"
+import * as cartSchema from "./cart.schema.js";
+import * as cartController from "./cart.controller.js";
 import { validation } from "../../middleware/validation.middleware.js";
 const router = Router();
 
@@ -18,7 +18,7 @@ router.post(
 router.get(
   "/",
   isAthenticated,
-  isAuthorized("user","admin"),
+  isAuthorized("user", "admin"),
   validation(cartSchema.getCart),
   cartController.getCart
 );

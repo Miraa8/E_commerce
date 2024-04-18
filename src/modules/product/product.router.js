@@ -5,10 +5,10 @@ import { fileUpload, filterObject } from "../../utils/multer.js";
 import { validation } from "../../middleware/validation.middleware.js";
 import * as productSchema from "./product.schema.js";
 import * as productController from "./product.controller.js";
-import reviewRouter from "../review/review.router.js"
+import reviewRouter from "../review/review.router.js";
 const router = Router();
 
-router.use("/:productId/review",reviewRouter);
+router.use("/:productId/review", reviewRouter);
 
 //create product
 router.post(
@@ -27,9 +27,28 @@ router.delete(
   "/:id",
   isAthenticated,
   isAuthorized("admin"),
-  validation(productSchema.deleteProduct),
+  validation(productSchema.productId),
   productController.deleteProduct
 );
+// Update product
+router.patch(
+  "/:id",
+  isAthenticated,
+  isAuthorized("admin"),
+  fileUpload(filterObject.image).fields([
+    { name: "defaultImage", maxCount: 1 },
+    { name: "images", maxCount: 3 },
+  ]),
+  validation(productSchema.updateProduct),
+  productController.updateProduct
+);
+
 //all products
-router.get("/",productController.allProducts);
+router.get("/", productController.allProducts);
+//get product reviews
+router.get(
+  "/:id",
+  validation(productSchema.productId),
+  productController.productReviews
+);
 export default router;

@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const sendEmail = async ({subject, to, html,attachments = []}) => {
+export const sendEmail = async ({ subject, to, html, attachments = [] }) => {
   //sender
   const transporter = nodemailer.createTransport({
     host: "localhost",
@@ -15,29 +15,25 @@ export const sendEmail = async ({subject, to, html,attachments = []}) => {
     },
   });
   //receiver
-  if(html){
+  if (html) {
     const info = await transporter.sendMail({
       from: `"AmiraCommerce" <${process.env.EMAIL}>`,
       to,
       subject,
       html,
     });
-     
-  if (info.rejected.length > 0) return false;
-  return true;
-  }else{
+
+    if (info.rejected.length > 0) return false;
+    return true;
+  } else {
     const info = await transporter.sendMail({
       from: `"AmiraCommerce" <${process.env.EMAIL}>`,
       to,
       subject,
       attachments,
     });
-     
-  if (info.rejected.length > 0) return false;
-  return true;
+
+    if (info.rejected.length > 0) return false;
+    return true;
   }
- 
 };
-
-
-

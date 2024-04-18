@@ -1,4 +1,4 @@
-import  { Schema, Types, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { Subcategory } from "./subcategory.model.js";
 
 const categorySchema = new Schema(

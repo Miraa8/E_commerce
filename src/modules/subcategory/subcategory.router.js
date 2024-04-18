@@ -43,4 +43,5 @@ router.delete(
 );
 //GET ALL SUBCATEGORIES
 router.get("/", allSubcategories);
+
 export default router;

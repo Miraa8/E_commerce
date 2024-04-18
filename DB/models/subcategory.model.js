@@ -34,12 +34,15 @@ const subcategorySchema = new Schema(
       ref: "Category",
       required: true,
     },
-    brandId: [{
-      type: Types.ObjectId,
-      ref: "Brand",
-    }],
+    brandId: [
+      {
+        type: Types.ObjectId,
+        ref: "Brand",
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export const Subcategory = mongoose.models.Subcategory || model("Subcategory", subcategorySchema);
+export const Subcategory =
+  mongoose.models.Subcategory || model("Subcategory", subcategorySchema);

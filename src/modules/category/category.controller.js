@@ -4,10 +4,8 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import cloudinary from "../../utils/cloud.js";
 import { Subcategory } from "../../../DB/models/subcategory.model.js";
 
-
 //create category
 export const createCategory = asyncHandler(async (req, res, next) => {
-  console.log(req.file);
   if (!req.file) return next(new Error("category image is required!"));
   const { public_id, secure_url } = await cloudinary.uploader.upload(
     req.file.path,
@@ -23,31 +21,33 @@ export const createCategory = asyncHandler(async (req, res, next) => {
 });
 
 //update category
-export const updateCategory = asyncHandler(async(req,res,next)=>{
-const category = await Category.findById(req.params.categoryId);
-if(!category)return next(new Error("category not found !"));
-category.name = req.body.name? req.body.name:category.name;
-category.slug = req.body.name?slugify( req.body.name):category.slug;
-if(req.file){
-  const {secure_url}=await  cloudinary.uploader.upload(req.file.path,{public_id:category.image.id});
-  category.image.url = secure_url;
-}
-await category.save();
-return res.json({success:true})
-})
+export const updateCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.findById(req.params.categoryId);
+  if (!category) return next(new Error("category not found !"));
+  category.name = req.body.name ? req.body.name : category.name;
+  category.slug = req.body.name ? slugify(req.body.name) : category.slug;
+  if (req.file) {
+    const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
+      public_id: category.image.id,
+    });
+    category.image.url = secure_url;
+  }
+  await category.save();
+  return res.json({ success: true });
+});
 //delete category
-export const deleteCategory = asyncHandler(async(req,res,next)=>{
-const category = await Category.findById(req.params.categoryId);
-if(!category)return next(new Error("category not found !"));
+export const deleteCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.findById(req.params.categoryId);
+  if (!category) return next(new Error("category not found !"));
 
-await  cloudinary.uploader.destroy(category.image.id);
+  await cloudinary.uploader.destroy(category.image.id);
 
-await Category.findByIdAndDelete(req.params.categoryId);
-await Subcategory.deleteMany({ categoryId: req.params.categoryId });
-return res.json({success:true,message:"category deleted!"})
-})
+  await Category.findByIdAndDelete(req.params.categoryId);
+  await Subcategory.deleteMany({ categoryId: req.params.categoryId });
+  return res.json({ success: true, message: "category deleted!" });
+});
 //get all categories
-export const allCategories = asyncHandler(async(req,res,next)=>{
+export const allCategories = asyncHandler(async (req, res, next) => {
   const categories = await Category.find().populate("subcategory");
-  return res.json({success:true, resaults:categories});
+  return res.json({ success: true, resaults: categories });
 });

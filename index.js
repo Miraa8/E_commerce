@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDb } from "./DB/connection.js";
 import authRouter from "./src/modules/auth/auth.router.js";
+import userRouter from "./src/modules/user/user.router.js";
 import categoryRouter from "./src/modules/category/category.router.js";
 import subcategoryRouter from "./src/modules/subcategory/subcategory.router.js";
 import brandRouter from "./src/modules/brand/brand.router.js";
@@ -11,6 +12,7 @@ import cartRouter from "./src/modules/cart/cart.router.js";
 import orderRouter from "./src/modules/order/order.router.js";
 import reviewRouter from "./src/modules/review/review.router.js";
 import cors from "cors";
+
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -18,12 +20,12 @@ const port = 3000;
 await connectDb();
 //cors
 const corsConfig = {
-    origin: '',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-app.use(cors(corsConfig))
-app.options("", cors(corsConfig))
+  origin: "",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
+app.use(cors(corsConfig));
+app.options("", cors(corsConfig));
 // const whiteList = ["http://127.0.0.1:5500"];
 // app.use((req, res, next) => {
 //   if(req.originalUrl.includes("/auth/activate_account")){
@@ -41,15 +43,16 @@ app.options("", cors(corsConfig))
 //   return next()
 // });
 //parsing
-app.use((req,res,next)=>{
-if(req.originalUrl ==="/order/webhook"){
-  return next()
-}
-express.json()(req,res,next);
-})
+app.use((req, res, next) => {
+  if (req.originalUrl === "/order/webhook") {
+    return next();
+  }
+  express.json()(req, res, next);
+});
 
 //routers
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 app.use("/category", categoryRouter);
 app.use("/subcategory", subcategoryRouter);
 app.use("/brand", brandRouter);

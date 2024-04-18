@@ -14,7 +14,11 @@ export const addReview = asyncHandler(async (req, res, next) => {
     "products.productId": productId,
   });
   if (!order)
-    return next(new Error("can not review this product", { cause: 400 }));
+    return next(
+      new Error("can not review this product you have not ordered it!", {
+        cause: 400,
+      })
+    );
   //check past reviews
   const isReview = await Review.findOne({
     createdBy: req.user._id,

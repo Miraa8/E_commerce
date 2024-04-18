@@ -11,8 +11,7 @@ export const updateStock = async (products, createOrder) => {
         },
       });
     }
-  }
-  else{
+  } else {
     for (const product of products) {
       await Product.findByIdAndUpdate(product.productId, {
         $inc: {
